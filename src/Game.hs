@@ -3,6 +3,7 @@
 module Game (game, Gamestate (..), Game.words) where
 
 import Data.List (nub, sort)
+import Data.Char (toLower)
 
 game :: Gamestate -> IO ()
 game state = do
@@ -11,7 +12,7 @@ game state = do
   case res of
     Ongoing -> do
       g <- getGuess
-      game $ guess g state
+      game $ guess (toLower g ) state
     _ -> do
       print res
 
@@ -47,4 +48,4 @@ getResult Gamestate {..}
   | otherwise = Loss
 
 words :: [String]
-words = ["Haskell", "Lazy", "Monad", "Curry", "Function", "Type"]
+words = ["haskell", "hazy", "monad", "curry", "function", "type"]
