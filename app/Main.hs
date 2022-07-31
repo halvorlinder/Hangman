@@ -1,8 +1,9 @@
 module Main where
 
-import qualified MyLib (someFunc)
+import Game ( game, Gamestate(..))
 
 main :: IO ()
 main = do
-  putStrLn "Hello, Haskell!"
-  MyLib.someFunc
+  putStrLn "Welcome to hangman!"
+  game ( Gamestate "halla" 0 5 [] )
+
