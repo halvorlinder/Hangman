@@ -1,8 +1,6 @@
 {-# LANGUAGE RecordWildCards #-}
-{-# OPTIONS_GHC -Wno-unrecognised-pragmas #-}
 
-{-# HLINT ignore "Used otherwise as a pattern" #-}
-module Game (game, Gamestate (..)) where
+module Game (game, Gamestate (..), Game.words) where
 
 import Data.List (nub, sort)
 
@@ -47,3 +45,6 @@ getResult Gamestate {..}
   | filter ( `elem` guessed ) solution == solution = Win
   | guesses < allowed = Ongoing
   | otherwise = Loss
+
+words :: [String]
+words = ["Haskell", "Lazy", "Monad", "Curry", "Function", "Type"]
