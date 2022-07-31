@@ -3,7 +3,7 @@
 module Game (game, Gamestate (..), Game.words) where
 
 import Data.List (nub, sort)
-import Data.Char (toLower)
+import Data.Char (toLower, isAlpha)
 
 game :: Gamestate -> IO ()
 game state = do
@@ -20,7 +20,7 @@ getGuess :: IO Char
 getGuess = do
   putStrLn "Guess a single letter: "
   l <- getLine
-  if length l <= 2 && length l > 0
+  if length l <= 2 && length l > 0 && isAlpha ( head l )
     then return (head l)
     else do
       putStrLn "Invalid guess!"
@@ -48,4 +48,4 @@ getResult Gamestate {..}
   | otherwise = Loss
 
 words :: [String]
-words = ["haskell", "hazy", "monad", "curry", "function", "type"]
+words = ["haskell", "lazy", "monad", "curry", "function", "type"]
