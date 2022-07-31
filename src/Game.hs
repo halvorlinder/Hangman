@@ -1,20 +1,21 @@
 {-# LANGUAGE RecordWildCards #-}
 {-# OPTIONS_GHC -Wno-unrecognised-pragmas #-}
+
 {-# HLINT ignore "Used otherwise as a pattern" #-}
 module Game (game, Gamestate (..)) where
-import Data.List (sort, nub)
+
+import Data.List (nub, sort)
 
 game :: Gamestate -> IO ()
 game state = do
   print state
-  let res = getResult state 
-  case res of 
-    Win -> putStrLn "w" 
-    Loss -> putStrLn "l" 
-    _ -> putStrLn ""
-  g <- getGuess
-
-  game $ guess g state
+  let res = getResult state
+  case res of
+    Ongoing -> do
+      g <- getGuess
+      game $ guess g state
+    _ -> do
+      print res
 
 getGuess :: IO Char
 getGuess = do
@@ -29,15 +30,20 @@ getGuess = do
 data Gamestate = Gamestate {solution :: String, guesses :: Int, allowed :: Int, guessed :: [Char]}
 
 instance Show Gamestate where
-  show (Gamestate solution gusses allowed guessed) = map (\c -> if c `elem` guessed then c else '*') solution
+  show Gamestate {..} = "\nMystery word: " ++ map (\c -> if c `elem` guessed then c else '*') solution ++ "\n" ++ show guesses ++ "/" ++ show allowed ++ " guesses used."
 
 data Result = Ongoing | Win | Loss
 
+instance Show Result where 
+    show Win = "Congratulations, you won the game!"
+    show Loss = "You lost the game."
+    show Ongoing = "The game is ongoing"
+
 guess :: Char -> Gamestate -> Gamestate
-guess g state = state
+guess g Gamestate {..} = Gamestate solution (guesses + 1) allowed (nub (g : guessed))
 
 getResult :: Gamestate -> Result
 getResult Gamestate {..}
- | ( sort . nub ) solution == ( sort . nub ) guessed = Win
- | guesses < allowed = Ongoing
- | otherwise = Loss
+  | filter ( `elem` guessed ) solution == solution = Win
+  | guesses < allowed = Ongoing
+  | otherwise = Loss
